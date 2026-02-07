@@ -2,144 +2,181 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>YiXuan Reel</title>
+<title>Video Gallery</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins, sans-serif;
+:root{
+  --bg:#121826;
+  --card:#1e2638;
+  --text:#ffffff;
+  --accent:#ff4d6d;
 }
 
-/* MENU */
-#menu{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#000428,#004e92);
+.light{
+  --bg:#f2f4f8;
+  --card:#ffffff;
+  --text:#111;
+  --accent:#ff4d6d;
 }
 
-.menu-box{
-    text-align:center;
-    background:rgba(255,255,255,0.08);
-    padding:30px;
-    border-radius:20px;
-    backdrop-filter:blur(12px);
-    box-shadow:0 0 30px rgba(0,0,0,0.5);
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  font-family:Poppins, sans-serif;
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.menu-box h2{
-    color:white;
-    margin-bottom:20px;
-    font-weight:400;
+.container{
+  width:95%;
+  max-width:450px;
 }
 
-.menu-box button{
-    width:220px;
-    margin:10px 0;
-    padding:15px;
-    font-size:20px;
-    border:none;
-    border-radius:40px;
-    cursor:pointer;
-    color:white;
-    background:rgba(255,255,255,0.18);
-    transition:0.3s;
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
 }
 
-.menu-box button:hover{
-    background:#ff4d6d;
-    box-shadow:0 0 25px rgba(255,77,109,0.9);
+.toggle{
+  cursor:pointer;
+  padding:6px 14px;
+  border-radius:20px;
+  background:var(--card);
+  font-size:14px;
 }
 
-/* FULLSCREEN VIDEO */
-#reel{
-    display:none;
-    height:100vh;
-    width:100vw;
-    background:black;
-    position:relative;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
 
-#reel video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:10px;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-/* TOP TEXT */
-.title{
-    position:absolute;
-    top:15px;
-    left:50%;
-    transform:translateX(-50%);
-    color:white;
-    font-size:18px;
-    letter-spacing:1px;
-    z-index:10;
-    opacity:0.85;
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
 
-/* BACK BUTTON */
-.back{
-    position:absolute;
-    top:15px;
-    left:15px;
-    z-index:10;
-    background:rgba(0,0,0,0.5);
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:20px;
-    cursor:pointer;
+.thumb{
+  width:100%;
+  height:140px;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+.name{
+  margin-top:8px;
+  font-size:15px;
+  text-align:center;
+}
+
+.playerBox{
+  margin-top:15px;
+  background:var(--card);
+  padding:12px;
+  border-radius:16px;
+  display:none;
+}
+
+video{
+  width:100%;
+  border-radius:12px;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:8px;
+}
+
+.download{
+  text-decoration:none;
+  color:white;
+  background:var(--accent);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- OPTION SCREEN -->
-<div id="menu">
-    <div class="menu-box">
-        <h2>Select Option ✨</h2>
+<div class="container">
 
-        <button onclick="openReel('YiXuan 1')">
-            YiXuan 1 💙
-        </button>
+  <div class="topbar">
+    <h3>Video Gallery 🎬</h3>
+    <div class="toggle" onclick="toggleTheme()">🌙 / ☀️</div>
+  </div>
+
+  <!-- SELECTION GRID -->
+  <div class="grid">
+    <div class="card" onclick="playVideo('YiXuan 1', yixuan)">
+      <img class="thumb" src="https://i.imgur.com/8Km9tLL.jpg">
+      <div class="name">YiXuan 1</div>
     </div>
-</div>
 
-<!-- FULLSCREEN VIDEO -->
-<div id="reel">
-    <button class="back" onclick="goBack()">← Back</button>
-    <div class="title" id="reelTitle">YiXuan 1</div>
+    <div class="card" onclick="playVideo('Yidhari', yidhari)">
+      <img class="thumb" src="https://i.imgur.com/QCNbOAo.jpg">
+      <div class="name">Yidhari</div>
+    </div>
 
-    <video id="videoPlayer" autoplay playsinline controls>
-        <source src="https://drive.google.com/uc?export=download&id=1ZhzxGz1P4_gMAKVOTBWU_pUTgVQkghpX" type="video/mp4">
-        Your browser does not support video.
-    </video>
+    <div class="card" onclick="playVideo('Jane Doe', jane)">
+      <img class="thumb" src="https://i.imgur.com/W5D9Gxq.jpg">
+      <div class="name">Jane Doe</div>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="playerBox" id="playerBox">
+    <h4 id="title"></h4>
+    <video id="player" controls playsinline></video>
+
+    <div class="actions">
+      <span>▶ Tap play</span>
+      <a id="downloadBtn" class="download" download>⬇ Download</a>
+    </div>
+  </div>
+
 </div>
 
 <script>
-function openReel(name){
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("reel").style.display = "block";
-    document.getElementById("reelTitle").innerText = name;
+const yixuan =
+"https://dl.dropboxusercontent.com/scl/fi/m19xn1suif2q5ja1qmcm3/YiXuan-Montagem-Shirt-Blue-yixuan-zenlesszonezero-zzzero-zzz-animation.mp4";
 
-    const video = document.getElementById("videoPlayer");
-    video.currentTime = 0;
-    video.play();
+const yidhari =
+"https://dl.dropboxusercontent.com/scl/fi/ra23aaly822s7hlpc6bzl/Yidhari-Montagem-Shirt-Blue-yidhari-zenlesszonezero-zzzero-zzz-animation.mp4";
+
+const jane =
+"https://dl.dropboxusercontent.com/scl/fi/d4i1tf4os85huw8uxjvht/Jane-Doe-Montagem-Shirt-Blue-janedoe-zenlesszonezero-zzzero-zzz-animation.mp4";
+
+function playVideo(name, link){
+  const box = document.getElementById("playerBox");
+  const video = document.getElementById("player");
+
+  document.getElementById("title").innerText = name;
+  video.src = link;
+  document.getElementById("downloadBtn").href = link;
+
+  box.style.display = "block";
 }
 
-function goBack(){
-    const video = document.getElementById("videoPlayer");
-    video.pause();
-
-    document.getElementById("reel").style.display = "none";
-    document.getElementById("menu").style.display = "flex";
+function toggleTheme(){
+  document.body.classList.toggle("light");
 }
 </script>
 
