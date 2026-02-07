@@ -2,181 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Video Gallery</title>
+<title>ZZZ Video Selector</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
-  --bg:#121826;
-  --card:#1e2638;
-  --text:#ffffff;
-  --accent:#ff4d6d;
-}
-
-.light{
-  --bg:#f2f4f8;
-  --card:#ffffff;
-  --text:#111;
-  --accent:#ff4d6d;
+*{
+    box-sizing:border-box;
+    font-family:Poppins, system-ui, sans-serif;
 }
 
 body{
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  font-family:Poppins, sans-serif;
-  color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+
+    /* Jane Doe animated background */
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,0,70,0.25), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,60,120,0.2), transparent 40%),
+        linear-gradient(120deg,#120012,#2b0018,#120012);
+    background-size:200% 200%;
+    animation:bgMove 12s ease-in-out infinite;
 }
 
-.container{
-  width:95%;
-  max-width:450px;
+/* background animation */
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
+/* floating glow particles */
+.particles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        radial-gradient(circle, rgba(255,50,90,0.35) 2px, transparent 2px),
+        radial-gradient(circle, rgba(255,120,160,0.25) 1.5px, transparent 2px);
+    background-size:60px 60px, 90px 90px;
+    animation:float 18s linear infinite;
 }
 
-.toggle{
-  cursor:pointer;
-  padding:6px 14px;
-  border-radius:20px;
-  background:var(--card);
-  font-size:14px;
+@keyframes float{
+    from{background-position:0 0, 0 0;}
+    to{background-position:600px 600px, -600px -600px;}
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
+.wrapper{
+    width:95%;
+    max-width:900px;
+    z-index:1;
+}
+
+h2{
+    text-align:center;
+    font-weight:400;
+    margin-bottom:18px;
+    letter-spacing:1px;
+}
+
+/* cards */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-bottom:22px;
 }
 
 .card{
-  background:var(--card);
-  border-radius:16px;
-  padding:10px;
-  cursor:pointer;
-  transition:0.3s;
+    background:rgba(255,255,255,0.08);
+    border-radius:18px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:0.35s;
+    backdrop-filter:blur(10px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.5);
+    position:relative;
 }
 
 .card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    transform:translateY(-8px) scale(1.03);
+    box-shadow:0 0 25px rgba(255,60,120,0.6);
 }
 
-.thumb{
-  width:100%;
-  height:140px;
-  border-radius:12px;
-  object-fit:cover;
+.card img{
+    width:100%;
+    height:150px;
+    object-fit:cover;
+}
+
+.card::after{
+    content:"▶";
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+    color:white;
+    background:rgba(0,0,0,0.25);
+    opacity:0;
+    transition:0.3s;
+}
+
+.card:hover::after{
+    opacity:1;
 }
 
 .name{
-  margin-top:8px;
-  font-size:15px;
-  text-align:center;
+    padding:12px;
+    text-align:center;
+    font-size:18px;
 }
 
-.playerBox{
-  margin-top:15px;
-  background:var(--card);
-  padding:12px;
-  border-radius:16px;
-  display:none;
+/* player */
+.player-box{
+    background:rgba(255,255,255,0.1);
+    padding:16px;
+    border-radius:20px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+
+#videoTitle{
+    text-align:center;
+    margin-bottom:10px;
+    font-weight:400;
+    letter-spacing:1px;
 }
 
 video{
-  width:100%;
-  border-radius:12px;
-}
-
-.actions{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:8px;
-}
-
-.download{
-  text-decoration:none;
-  color:white;
-  background:var(--accent);
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:14px;
+    width:100%;
+    border-radius:16px;
+    background:black;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="particles"></div>
 
-  <div class="topbar">
-    <h3>Video Gallery 🎬</h3>
-    <div class="toggle" onclick="toggleTheme()">🌙 / ☀️</div>
-  </div>
+<div class="wrapper">
 
-  <!-- SELECTION GRID -->
-  <div class="grid">
-    <div class="card" onclick="playVideo('YiXuan 1', yixuan)">
-      <img class="thumb" src="https://i.imgur.com/8Km9tLL.jpg">
-      <div class="name">YiXuan 1</div>
+    <h2>Choose Your Agent 🎮</h2>
+
+    <div class="cards">
+
+        <div class="card" onclick="playVideo(
+        'YiXuan 1',
+        'https://dl.dropboxusercontent.com/scl/fi/m19xn1suif2q5ja1qmcm3/YiXuan-Montagem-Shirt-Blue-yixuan-zenlesszonezero-zzzero-zzz-animation.mp4',
+        'thumb-yixuan.jpg'
+        )">
+            <img src="thumb-yixuan.jpg">
+            <div class="name">YiXuan 1</div>
+        </div>
+
+        <div class="card" onclick="playVideo(
+        'Yidhari',
+        'https://dl.dropboxusercontent.com/scl/fi/ra23aaly822s7hlpc6bzl/Yidhari-Montagem-Shirt-Blue-yidhari-zenlesszonezero-zzzero-zzz-animation.mp4',
+        'thumb-yidhari.jpg'
+        )">
+            <img src="thumb-yidhari.jpg">
+            <div class="name">Yidhari</div>
+        </div>
+
+        <div class="card" onclick="playVideo(
+        'Jane Doe',
+        'https://dl.dropboxusercontent.com/scl/fi/d4i1tf4os85huw8uxjvht/Jane-Doe-Montagem-Shirt-Blue-janedoe-zenlesszonezero-zzzero-zzz-animation.mp4',
+        'thumb-jane.jpg'
+        )">
+            <img src="thumb-jane.jpg">
+            <div class="name">Jane Doe</div>
+        </div>
+
     </div>
 
-    <div class="card" onclick="playVideo('Yidhari', yidhari)">
-      <img class="thumb" src="https://i.imgur.com/QCNbOAo.jpg">
-      <div class="name">Yidhari</div>
+    <div class="player-box">
+        <h3 id="videoTitle">Select a card to play</h3>
+        <video id="player" controls playsinline></video>
     </div>
-
-    <div class="card" onclick="playVideo('Jane Doe', jane)">
-      <img class="thumb" src="https://i.imgur.com/W5D9Gxq.jpg">
-      <div class="name">Jane Doe</div>
-    </div>
-  </div>
-
-  <!-- PLAYER -->
-  <div class="playerBox" id="playerBox">
-    <h4 id="title"></h4>
-    <video id="player" controls playsinline></video>
-
-    <div class="actions">
-      <span>▶ Tap play</span>
-      <a id="downloadBtn" class="download" download>⬇ Download</a>
-    </div>
-  </div>
 
 </div>
 
 <script>
-const yixuan =
-"https://dl.dropboxusercontent.com/scl/fi/m19xn1suif2q5ja1qmcm3/YiXuan-Montagem-Shirt-Blue-yixuan-zenlesszonezero-zzzero-zzz-animation.mp4";
+function playVideo(title, src, poster){
+    const video = document.getElementById("player");
+    const text = document.getElementById("videoTitle");
 
-const yidhari =
-"https://dl.dropboxusercontent.com/scl/fi/ra23aaly822s7hlpc6bzl/Yidhari-Montagem-Shirt-Blue-yidhari-zenlesszonezero-zzzero-zzz-animation.mp4";
+    text.innerText = title;
 
-const jane =
-"https://dl.dropboxusercontent.com/scl/fi/d4i1tf4os85huw8uxjvht/Jane-Doe-Montagem-Shirt-Blue-janedoe-zenlesszonezero-zzzero-zzz-animation.mp4";
-
-function playVideo(name, link){
-  const box = document.getElementById("playerBox");
-  const video = document.getElementById("player");
-
-  document.getElementById("title").innerText = name;
-  video.src = link;
-  document.getElementById("downloadBtn").href = link;
-
-  box.style.display = "block";
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("light");
+    video.pause();
+    video.src = src;
+    video.poster = poster;
+    video.load();
 }
 </script>
 
